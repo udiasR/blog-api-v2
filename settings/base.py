@@ -1,13 +1,16 @@
-from pathlib import Path
+import os
+
+from settings.conf import *
 
 #---------------------------------------------------
 # Path
 #
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ROOT_URLCONF = 'settings.urls'
 WSGI_APPLICATION = 'settings.wsgi.application'
 ASGI_APPLICATION = 'settings.asgi.application'
+AUTH_USER_MODEL = 'auths.CustomUser'
 
 #---------------------------------------------------
 # Apps
@@ -24,9 +27,10 @@ DJANGO_AND_THIRD_PARTY_APPS = [
 
 
 PROJECT_APPS  = [
-    apps.blog.apps.BlogConfig,
-
+    'apps.blog.apps.BlogConfig',
+    'apps.auths.apps.AuthsConfig',
 ]
+
 
 INSTALLED_APPS = DJANGO_AND_THIRD_PARTY_APPS + PROJECT_APPS
 

@@ -1,7 +1,6 @@
 from decouple import config
 
-from settings.base import *  # noqa
-
+from settings.base import *
 
 DEBUG = False
 

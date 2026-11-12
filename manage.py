@@ -3,10 +3,17 @@
 import os
 import sys
 
+from settings.conf import ENV_ID
+
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'blog.settings')
+    assert ENV_ID, "Environmental value is not set"
+
+    os.environ.setdefault(
+        'DJANGO_SETTINGS_MODULE',
+        f'settings.env.{ENV_ID}'
+    )
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
