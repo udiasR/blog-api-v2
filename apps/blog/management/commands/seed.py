@@ -2,6 +2,10 @@ from django.core.management import BaseCommand, CommandParser, CommandError
 from typing import Any
 from django.db import transaction
 from faker import Faker
+from apps.blog.models import Comment, Tag, Post, Category
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class Command(BaseCommand):
     help = "Fill the database with fake data"
@@ -51,19 +55,45 @@ class Command(BaseCommand):
         with transaction.atomic():
             if options["clear"]:
                 self.__clear()
+            if (posts_count or comments_count) and User.objects.count() + users_count == 0:
+                raise CommandError("Posts and comments are requested, but there are no users")
+            if comments_count and not posts_count and not Post.objects.filter(status=Post.Status.PUBLISHED).exists():
+                raise CommandError("Comments are requested, but there are no published posts")
+
+
+            users = self.__create_users(fake, users_count)
+            # categories = self.__create_named(Category, CATEGORY_NAMES)
+            # tags = self.__creat_named(TAG, TAG_NAMES)
+            posts = self.__create_posts(fake, posts_count)
+            comments = self.__create_comments(fake, comments_count)
+
 
 
 
 
     def __clear(self) -> None:
+        Comment.objects.all().delete()
+        Post.objects.all().delete()
+        Tag.objects.all().delete()
+        Category.objects.all().delete()
+        User.objects.filter(is_superuser=False).delete()
+
+
+    def __create_users(self, fake: Faker, count: int) -> int:
+        used_emails: set[str] = set(User.objects.values_list("email", flat=True))
+        # password: str = make_password(SEED_PASSWORD)
+        users: list = []
+
+        for _ in range(count):
+            first, last = fake.first_name(), fake.last_name()
+            pass
+
+
+        
+        return len(users)
+
+    def __create_posts(self, fake: Faker, count: int):
         pass
 
-
-    def __create_users(self):
-        pass
-
-    def __create_posts(self):
-        pass
-
-    def __create_comments(self):
+    def __create_comments(self, fake: Faker, count: int):
         pass

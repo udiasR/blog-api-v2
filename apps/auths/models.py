@@ -53,15 +53,18 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         unique=True,
     )
 
-    full_name = CharField(
+    first_name = CharField(
         max_length=FULL_NAME_MAX_LEN,
+    )
+    last_name = CharField(
+            max_length=FULL_NAME_MAX_LEN,
     )
 
     is_active=BooleanField(default=True)
     is_staff = BooleanField(default=False)
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["full_name"]
+    REQUIRED_FIELDS = ["first_name", "last_name"]
 
     objects = CustomUserManager()
 
