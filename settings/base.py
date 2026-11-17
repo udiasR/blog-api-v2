@@ -17,6 +17,9 @@ AUTH_USER_MODEL = 'auths.CustomUser'
 #
 
 DJANGO_AND_THIRD_PARTY_APPS = [
+    # 'unfold',
+    # 'unfold.contrib.filters',
+    # 'unfold.contrib.forms',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
