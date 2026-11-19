@@ -4,6 +4,12 @@ from django.db import transaction
 from faker import Faker
 from apps.blog.models import Comment, Tag, Post, Category
 from django.contrib.auth import get_user_model
+from django.utils.text import slugify
+from django.contrib.auth.hashers import make_password
+
+
+EMAIL_DOMAIN = "example.com"
+SEED_PASSWORD = "lorem ipsum"
 
 User = get_user_model()
 
@@ -81,19 +87,33 @@ class Command(BaseCommand):
 
     def __create_users(self, fake: Faker, count: int) -> int:
         used_emails: set[str] = set(User.objects.values_list("email", flat=True))
-        # password: str = make_password(SEED_PASSWORD)
+        password_hash: str = make_password(SEED_PASSWORD)
         users: list = []
 
         for _ in range(count):
             first, last = fake.first_name(), fake.last_name()
-            pass
+            base = slugify(f'{first} {last}').replace('-', '.')
+            email, n = f"{base}@{EMAIL_DOMAIN}", 1
 
+            while email in used_emails:
+                n+=1
+                email =  f"{base}{n}@{EMAIL_DOMAIN}"
+            used_emails.add(email)
+            users.append(User(
+                email=email, first_name=first, last_name=last, password=password_hash,
+            ))
 
-        
+        User.objects.bulk_create(users, batch_size=1000)
         return len(users)
 
-    def __create_posts(self, fake: Faker, count: int):
-        pass
 
-    def __create_comments(self, fake: Faker, count: int):
-        pass
+    def __create_posts(self, fake: Faker, count: int) -> int:
+        if not count:
+            return 0
+        
+
+
+
+    def __create_comments(self, fake: Faker, count: int) -> int:
+        if not count:
+            return 0
