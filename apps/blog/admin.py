@@ -1,7 +1,8 @@
 
 # Register your models here.
 
-from django.contrib.admin import register, ModelAdmin
+from django.contrib.admin import register
+from unfold.admin import ModelAdmin
 from apps.blog.models import Category, Tag, Post, Comment
 
 @register(Category)

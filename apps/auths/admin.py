@@ -1,7 +1,19 @@
 
 # Register your models here.
-from django.contrib.admin import ModelAdmin, register
+from django.contrib.admin import register
+from unfold.admin import ModelAdmin
 from apps.auths.models import CustomUser, CustomUserManager
+from django.contrib.auth.models import Group
+from django.contrib import admin
+
+admin.site.unregister(Group)
+
+@register(Group)
+class GroupAdmin(ModelAdmin):
+    search_fields = ("name",)
+    filter_horizontal = ("permissions",)
+
+
 
 
 @register(CustomUser)
