@@ -29,7 +29,7 @@ class Tag(models.Model):
     name = CharField(max_length=50, unique=True)   
     slug = SlugField(unique=True)
     class Meta: 
-        verbose_name_plural = "categories"
+        verbose_name_plural = "tags"
     
     
     def __str__(self): 
@@ -40,10 +40,10 @@ class Post(models.Model):
         DRAFT = "draft", "Draft"
         PUBLISHED = "published", "Published"
     author = ForeignKey(base.AUTH_USER_MODEL, on_delete=CASCADE, related_name="posts")
+    category = ForeignKey(Category, on_delete=SET_NULL, null=True, blank=True, related_name="posts")
     title = CharField(max_length=200)
     slug = SlugField(unique=True)
     body = TextField()
-    category = ForeignKey(Category, on_delete=SET_NULL, null=True, blank=True, related_name="posts")
     tags = ManyToManyField(Tag, blank=True, related_name="posts")
     status = CharField(max_length=10, choices=Status, default=Status.DRAFT)
     created_at = DateTimeField(auto_now_add=True)
